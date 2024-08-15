@@ -1,8 +1,9 @@
+import Slide from "./Banner/Slide";
 
 const Home = () => {
     return (
         <div>
-            HEllo From Home
+            <Slide></Slide>
         </div>
     );
 };

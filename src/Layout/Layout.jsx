@@ -5,13 +5,14 @@ import Nav from "../Components/SharedComponents/Nav/Nav";
 
 const Layouts = () => {
     return (
-        <div className="mx-auto w-[90%]">
-            <div>
-                <Nav></Nav>
-                Hello world 
-            </div>
-            <div>
-                <Outlet></Outlet>
+        <div className="bg-green-100">
+            <div className="mx-auto w-[90%]">
+                <div>
+                    <Nav></Nav>
+                </div>
+                <div>
+                    <Outlet></Outlet>
+                </div>
             </div>
         </div>
     );
