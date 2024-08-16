@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
 import Title from '../../../Components/SharedComponents/Title/Title';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Card = () => {
     const [card, setCard] = useState([]);
     useEffect(() => {
-        fetch('data.json')
-            .then(res => res.json())
-            .then(data => setCard(data))
+        const getData = async () => {
+            // setLoading(true);
+            try {
+                const { data } = await axios(`http://localhost:8000/book`);
+                setCard(data);
+            } finally {
+                // setLoading(false);
+            }
+        };
+        getData();
     })
 
     return (
