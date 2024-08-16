@@ -6,7 +6,7 @@ import Footer from "../Components/SharedComponents/Footer/Footer";
 
 const Layouts = () => {
     return (
-        <div className="bg-green-100">
+        <div className="bg-green-100 font-gramond">
             <div className="mx-auto w-[94%]">
                 <div>
                     <Nav></Nav>

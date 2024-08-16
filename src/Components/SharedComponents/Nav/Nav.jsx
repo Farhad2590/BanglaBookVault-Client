@@ -1,4 +1,5 @@
 // import { NavLink } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import logo from '../../../assets/logo.png'
 
 const Nav = () => {
@@ -8,7 +9,7 @@ const Nav = () => {
                 <div className="">
                     <div className="flex items-center">
                         <img className="w-16" src={logo} alt="" />
-                        <h2 className="text-green-700 font-bold text-xl md:text-xl lg:text-3xl">BanglaBookVault</h2>
+                        <h2 className="text-green-700 font-bold font-gramond text-xl md:text-xl lg:text-3xl">BanglaBookVault</h2>
                     </div>
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -34,7 +35,7 @@ const Nav = () => {
                     </ul>
                 </div>
                 <div className="flex gap-2">
-                    <a className="btn bg-green-700 text-white">Sign In</a>
+                    <Link to="/signin" className="btn bg-green-700 text-white">Sign In</Link>
                 </div>
             </div>
 
