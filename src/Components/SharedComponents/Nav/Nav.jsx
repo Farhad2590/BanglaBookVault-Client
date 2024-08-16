@@ -1,5 +1,4 @@
 // import { NavLink } from "react-router-dom";
-import { Link } from 'react-router-dom';
 import logo from '../../../assets/logo.png'
 import useAuth from '../../../hooks/useAuth';
 
@@ -17,7 +16,6 @@ const Nav = () => {
 
                 </div>
                 <div className="flex gap-2">
-                    {/* <Link to="/signin" className="btn bg-green-700 text-white">Sign In</Link> */}
                     {
                         user ?
                             <div className="dropdown dropdown-end">
@@ -39,12 +37,12 @@ const Nav = () => {
                             </div>
 
                             :
-                            <Link to="/signin">
-                                <button className="btn bg-green-700  text-white hover:border border-green-700">
-                                    Join Us
-                                </button>
-
-                            </Link>
+                            // <Link>
+                            //     <button className="btn bg-green-700  text-white hover:border border-green-700">
+                            //         Join Us To Explore Books
+                            //     </button>
+                            // </Link>
+                            null
 
                     }
                 </div>

@@ -4,14 +4,26 @@ import signinImage from "../../assets/Login-bro.svg"
 import useAuth from "../../hooks/useAuth";
 // import home from "../../assets/home.png"
 import toast from 'react-hot-toast'
+import { FaGoogle } from "react-icons/fa";
 
 
 const Signin = () => {
-  const { signIn, setLoading } = useAuth()
+  const { signIn, setLoading,signInWithGoogle } = useAuth()
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate()
   const location = useLocation()
   const from = location?.state || '/'
+
+
+  // handle google signin
+  const handleGoogleSignIn = async () => {
+    signInWithGoogle()
+        .then(result => {
+            console.log(result.user);
+            navigate('/');
+            toast.success('Google sigin in successfull')
+        })
+}
 
   const onSubmit = (data) => {
     console.log(data);
@@ -60,9 +72,10 @@ return (
           />
           {errors.password && <span className="text-red-600">Password is required</span>}
         </div>
-        <div className="text-right">
-          <a href="#" className="text-sm text-green-800 hover:underline">Forgot password?</a>
-        </div>
+        <div onClick={handleGoogleSignIn} className="flex justify-end gap-2 items-center">
+                        <FaGoogle />
+                        <a href="#" className="text-lg text-green-800 hover:underline">Google Login</a>
+                    </div>
         <button type="submit" className="w-full py-2 bg-green-800 text-white rounded-md hover:bg-green-800 transition duration-300">Submit</button>
         <p className="text-center text-sm">Dont have an account? <Link to="/signup" htmlFor="flip" className="text-green-800 cursor-pointer hover:underline">Sign up now</Link></p>
       </form>
