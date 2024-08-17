@@ -8,25 +8,28 @@ const Card = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [count, setCount] = useState(0)
     const [filter, setFilter] = useState('')
+    const [publiser, setpubliser] = useState('')
     const [card, setCard] = useState([]);
+    const [sort, setSort] = useState('')
+
     useEffect(() => {
         const getData = async () => {
             // setLoading(true);
             try {
-                const { data } = await axios(`http://localhost:8000/book?page=${currentPage}&size=${itemsPerPage}&filter=${filter}`);
+                const { data } = await axios(`http://localhost:8000/book?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&publiser=${publiser}`);
                 setCard(data);
             } finally {
                 // setLoading(false);
             }
         };
         getData();
-    }, [currentPage, itemsPerPage, filter])
+    }, [currentPage, itemsPerPage, filter, sort,publiser])
 
     useEffect(() => {
         const getCount = async () => {
             // setLoading(true);
             try {
-                const { data } = await axios(`http://localhost:8000/books-count`);
+                const { data } = await axios(`http://localhost:8000/books-count?filter=${filter}&publiser=${publiser}`);
                 setCount(data.count)
 
             } finally {
@@ -34,8 +37,8 @@ const Card = () => {
             }
         };
         getCount();
-    })
-    console.log(count);
+    }, [filter,publiser])
+
 
     const numberOfPages = Math.ceil(count / itemsPerPage)
     const pages = [...Array(numberOfPages).keys()].map(element => element + 1)
@@ -46,10 +49,63 @@ const Card = () => {
         console.log(value)
         setCurrentPage(value)
     }
+    console.log(sort);
+
 
     return (
         <div className='pb-10'>
             <Title heading="Our Books"></Title>
+           
+            <div className='flex flex-col md:flex-row justify-center items-center gap-5 flex-wrap mt-5 mb-5'>
+
+                <div>
+                    <select
+                        // onChange={e => {
+                        //     setSort(e.target.value)
+                        //     setCurrentPage(1)
+                        // }}
+                        // value={sort}
+                        name='sort'
+                        id='sort'
+                        className='border p-4 rounded-md'
+                    >
+                        <option value=''>Filter By Price</option>
+                        <option value='dsc'>Descending Order</option>
+                        <option value='asc'>Ascending Order</option>
+                    </select>
+                </div>
+                <form >
+                    <div className='flex p-1 overflow-hidden border rounded-lg focus-within:ring focus-within:ring-opacity-40 focus-within:border-green-800 focus-within:ring-green-800'>
+                        <input
+                            className='px-6 py-2 text-black placeholder-black bg-white outline-none focus:placeholder-transparent'
+                            type='text'
+                            name='search'
+                            placeholder='Enter book Title'
+                            aria-label='Enter book Title'
+                        />
+                        <button className='px-1 md:px-4 py-3 text-sm font-medium tracking-wider text-white uppercase transition-colors duration-300 transform bg-green-800 rounded-md disabled:hover:bg-white disabled:hover:text-white hover:text-white disabled:cursor-not-allowed disabled:text-white'>
+                            Search
+                        </button>
+                    </div>
+                </form>
+                <div>
+                    <select
+                        onChange={e => {
+                            setSort(e.target.value)
+                            setCurrentPage(1)
+                        }}
+                        value={sort}
+                        name='sort'
+                        id='sort'
+                        className='border p-4 rounded-md'
+                    >
+                        <option value=''>Filter By Price</option>
+                        <option value='dsc'>Descending Order</option>
+                        <option value='asc'>Ascending Order</option>
+                    </select>
+                </div>
+                <button className='btn'>Reset</button>
+            </div>
             <div className='flex flex-col md:flex-row justify-center items-center gap-5 flex-wrap mt-5 mb-5'>
                 <div>
                     <select
@@ -70,33 +126,25 @@ const Card = () => {
                         <option value='Economic History'>Economic History</option>
                     </select>
                 </div>
-
-                <form >
-                    <div className='flex p-1 overflow-hidden border rounded-lg focus-within:ring focus-within:ring-opacity-40 focus-within:border-green-800 focus-within:ring-green-800'>
-                        <input
-                            className='px-6 py-2 text-black placeholder-black bg-white outline-none focus:placeholder-transparent'
-                            type='text'
-                            name='search'
-                            placeholder='Enter book Title'
-                            aria-label='Enter book Title'
-                        />
-                        <button className='px-1 md:px-4 py-3 text-sm font-medium tracking-wider text-white uppercase transition-colors duration-300 transform bg-green-800 rounded-md disabled:hover:bg-white disabled:hover:text-white hover:text-white disabled:cursor-not-allowed disabled:text-white'>
-                            Search
-                        </button>
-                    </div>
-                </form>
                 <div>
                     <select
-                        name='sort'
-                        id='sort'
-                        className='border p-4 rounded-md'
+                        onChange={e => {
+                            setpubliser(e.target.value)
+                            setCurrentPage(1)
+                        }}
+                        value={publiser}
+                        name='categoryName'
+                        id='categoryName'
+                        className='border p-4 rounded-lg'
                     >
-                        <option value=''>Filter By Price</option>
-                        <option value='dsc'>Descending Order</option>
-                        <option value='asc'>Ascending Order</option>
+                        <option value=''>Filter By Publisher Brand</option>
+                        <option value='Environment Press'>Environment Press</option>
+                        <option value='Bengal Press'>Bengal Press</option>
+                        <option value='Dhaka Publications'>Dhaka Publications</option>
+                        <option value='Subcontinental Press'>Subcontinental Press</option>
+                        {/* <option value='Economic History'>Economic History</option> */}
                     </select>
                 </div>
-                <button className='btn'>Reset</button>
             </div>
             <div className="grid justify-center mb-10 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 ">
                 {
