@@ -12,50 +12,72 @@ const Card = () => {
     const [card, setCard] = useState([]);
     const [sort, setSort] = useState('')
 
+    const [search, setSearch] = useState('')
+    // const [searchText, setSearchText] = useState('')
+
     useEffect(() => {
         const getData = async () => {
             // setLoading(true);
             try {
-                const { data } = await axios(`http://localhost:8000/book?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&publiser=${publiser}`);
+                const { data } = await axios(`https://bangla-book-vault-server.vercel.app/book?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&publiser=${publiser}&search=${search}`);
                 setCard(data);
             } finally {
                 // setLoading(false);
             }
         };
         getData();
-    }, [currentPage, itemsPerPage, filter, sort,publiser])
+    }, [currentPage, itemsPerPage, filter, sort, publiser, search])
 
     useEffect(() => {
         const getCount = async () => {
-            // setLoading(true);
             try {
-                const { data } = await axios(`http://localhost:8000/books-count?filter=${filter}&publiser=${publiser}`);
-                setCount(data.count)
-
-            } finally {
-                // setLoading(false);
+                const { data } = await axios(`https://bangla-book-vault-server.vercel.app/books-count?filter=${filter}&publiser=${publiser}`);
+                console.log('Total count:', data.count); // Debugging line
+                setCount(data.count);
+            } catch (error) {
+                console.error('Error fetching count:', error);
             }
         };
         getCount();
-    }, [filter,publiser])
+    }, [filter, publiser]);
 
 
-    const numberOfPages = Math.ceil(count / itemsPerPage)
+
+    const numberOfPages = Math.ceil(count / itemsPerPage);
+    console.log('Number of Pages:', numberOfPages); // Debugging line
     const pages = [...Array(numberOfPages).keys()].map(element => element + 1)
 
 
     //  handle pagination button
     const handlePaginationButton = value => {
-        console.log(value)
+        // console.log(value)
         setCurrentPage(value)
     }
-    console.log(sort);
+
+
+
+    const handleReset = () => {
+        setFilter('')
+        setSort('')
+        setpubliser('')
+        setSearch('')
+
+        // setSearchText('')
+    }
+
+    const handleSearch = e => {
+        e.preventDefault()
+        const text = e.target.search.value;
+
+        setSearch(text)
+    }
+    // console.log(search);
 
 
     return (
         <div className='pb-10'>
             <Title heading="Our Books"></Title>
-           
+
             <div className='flex flex-col md:flex-row justify-center items-center gap-5 flex-wrap mt-5 mb-5'>
 
                 <div>
@@ -74,7 +96,7 @@ const Card = () => {
                         <option value='asc'>Ascending Order</option>
                     </select>
                 </div>
-                <form >
+                <form onSubmit={handleSearch}>
                     <div className='flex p-1 overflow-hidden border rounded-lg focus-within:ring focus-within:ring-opacity-40 focus-within:border-green-800 focus-within:ring-green-800'>
                         <input
                             className='px-6 py-2 text-black placeholder-black bg-white outline-none focus:placeholder-transparent'
@@ -104,7 +126,7 @@ const Card = () => {
                         <option value='asc'>Ascending Order</option>
                     </select>
                 </div>
-                <button className='btn'>Reset</button>
+                <button onClick={handleReset} className='btn'>Reset</button>
             </div>
             <div className='flex flex-col md:flex-row justify-center items-center gap-5 flex-wrap mt-5 mb-5'>
                 <div>
@@ -126,6 +148,7 @@ const Card = () => {
                         <option value='Economic History'>Economic History</option>
                     </select>
                 </div>
+
                 <div>
                     <select
                         onChange={e => {
@@ -167,11 +190,35 @@ const Card = () => {
                                 <p>By: {cardItem.writerName}</p>
                             </div>
                             <div className="border-[2px] border-dashed my-5"></div>
+                            <div className="flex justify-between">
+                                Price: {cardItem.priceRange} taka
+                                <div className="flex gap-2 items-center">
+                                    <p>{cardItem.publisher}</p>
+                                </div>
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <p>Format:</p>
+                                    <ul>
+                                        {cardItem.format.map((formatItem, formatIndex) => (
+                                            <li key={formatIndex}>{formatItem}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p>Availability:</p>
+                                    <ul>
+                                        {cardItem.availability.map((availabilityItem, availabilityIndex) => (
+                                            <li key={availabilityIndex}>{availabilityItem}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
                         </Link>
                     ))
                 }
-
             </div>
+
             {/* Pagination Section */}
             <div className='flex justify-center mt-12'>
                 {/* Previous Button */}

@@ -1,8 +1,30 @@
-# React + Vite
+# BanglaBookVault
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **BanglaBookVault** – your one-stop destination for exploring and purchasing PDFs and articles about the rich history of Bangladesh. Whether you're interested in the Liberation War, culture, heritage, or the political and economic history of Bangladesh, you'll find a wealth of resources here.
 
-Currently, two official plugins are available:
+## Features
+- **Browse and Purchase Books**: Explore a variety of books categorized by different themes of Bangladesh's history.
+- **Advanced Search and Filter**: Easily search for specific books by title, filter by category, publisher, and sort by price.
+- **Responsive Design**: Accessible across all devices, ensuring a seamless user experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Website
+Visit the live website: [BanglaBookVault](#)
+
+## Installation and Setup
+
+Follow these steps to set up the project locally on your machine.
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+
+### Step 1: Clone the Repository
+
+git clone https://github.com/your-username/___
+cd banglabookvault
+
+### Step 2: Install Dependencies
+npm install
+
+### Step 3:  Run the Development Server
+npm run dev

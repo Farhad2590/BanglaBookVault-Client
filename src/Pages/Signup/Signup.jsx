@@ -12,11 +12,22 @@ const Signup = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const from = location?.state || '/'
+    // const location = useLocation()
     const { register, handleSubmit, formState: { errors } } = useForm();
     const {
         createUser,
         signInWithGoogle
     } = useAuth()
+
+    const onSubmit = (data) => {
+        createUser(data.email, data.password)
+            .then(result => {
+                const loggedUser = result.user;
+                console.log(loggedUser);
+                navigate(from, { replace: true });
+                toast.success('Signup successfull')
+            })
+    };
 
     // handle google signin
     const handleGoogleSignIn = async () => {
@@ -29,13 +40,7 @@ const Signup = () => {
     }
 
 
-    const onSubmit = (data) => {
-        createUser(data.email, data.password)
-            .then(result => {
-                const loggedUser = result.user;
-                console.log(loggedUser);
-            })
-    };
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="relative w-full max-w-3xl bg-white  shadow-lg  flex">
