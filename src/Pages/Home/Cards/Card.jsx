@@ -24,7 +24,7 @@ const Card = () => {
         const getData = async () => {
             setLoading(true);
             try {
-                const { data } = await axios(`http://localhost:8000/book?page=
+                const { data } = await axios(`https://bangla-book-vault-server.vercel.app/book?page=
                     ${currentPage}&size=${itemsPerPage}&filter=${filter}&filters=${filters}&sort=${sort}&sorts=${sorts}&search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
                 setCard(data);
             } finally {
@@ -40,7 +40,7 @@ const Card = () => {
     useEffect(() => {
         const getCount = async () => {
             try {
-                const { data } = await axios(`http://localhost:8000/books-count?filter=${filter}&filters=${filters}`);
+                const { data } = await axios(`https://bangla-book-vault-server.vercel.app/books-count?filter=${filter}&filters=${filters}`);
                 console.log('Total count:', data.count); // Debugging line
                 setCount(data.count);
             } catch (error) {
