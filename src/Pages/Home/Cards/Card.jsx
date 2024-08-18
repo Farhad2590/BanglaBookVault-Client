@@ -2,36 +2,45 @@ import { useEffect, useState } from 'react';
 import Title from '../../../Components/SharedComponents/Title/Title';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import LoadingState from '../../../Components/SharedComponents/LoadingState/LoadingState';
 
 const Card = () => {
     const [itemsPerPage, setItemsPerPage] = useState(8)
     const [currentPage, setCurrentPage] = useState(1)
     const [count, setCount] = useState(0)
     const [filter, setFilter] = useState('')
-    const [publiser, setpubliser] = useState('')
+    const [filters, setFilters] = useState('')
+    // const [publiser, setpubliser] = useState('')
     const [card, setCard] = useState([]);
-    const [sort, setSort] = useState('')
-
+    const [sort, setSort] = useState('');
+    const [sorts, setSorts] = useState('');
     const [search, setSearch] = useState('')
-    // const [searchText, setSearchText] = useState('')
+    const [loading, setLoading] = useState(true);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(1000);
+
 
     useEffect(() => {
         const getData = async () => {
-            // setLoading(true);
+            setLoading(true);
             try {
-                const { data } = await axios(`https://bangla-book-vault-server.vercel.app/book?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&publiser=${publiser}&search=${search}`);
+                const { data } = await axios(`http://localhost:8000/book?page=
+                    ${currentPage}&size=${itemsPerPage}&filter=${filter}&filters=${filters}&sort=${sort}&sorts=${sorts}&search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
                 setCard(data);
             } finally {
-                // setLoading(false);
+                setLoading(false);
             }
         };
         getData();
-    }, [currentPage, itemsPerPage, filter, sort, publiser, search])
+    }, [currentPage, itemsPerPage, filter, sort, search, filters, sorts, minPrice, maxPrice])
+
+    // console.log(publiser);
+
 
     useEffect(() => {
         const getCount = async () => {
             try {
-                const { data } = await axios(`https://bangla-book-vault-server.vercel.app/books-count?filter=${filter}&publiser=${publiser}`);
+                const { data } = await axios(`http://localhost:8000/books-count?filter=${filter}&filters=${filters}`);
                 console.log('Total count:', data.count); // Debugging line
                 setCount(data.count);
             } catch (error) {
@@ -39,7 +48,7 @@ const Card = () => {
             }
         };
         getCount();
-    }, [filter, publiser]);
+    }, [filter, filters]);
 
 
 
@@ -58,8 +67,9 @@ const Card = () => {
 
     const handleReset = () => {
         setFilter('')
+        setFilters('')
         setSort('')
-        setpubliser('')
+        setSorts('')
         setSearch('')
 
         // setSearchText('')
@@ -71,8 +81,15 @@ const Card = () => {
 
         setSearch(text)
     }
-    // console.log(search);
-
+    const handlePriceRangeChange = () => {
+        const min = document.getElementById("minPrice").value || 0;
+        const max = document.getElementById("maxPrice").value || Infinity;
+        setMinPrice(min);
+        setMaxPrice(max);
+    };
+    if (loading) {
+        return <LoadingState></LoadingState>;
+    }
 
     return (
         <div className='pb-10'>
@@ -82,18 +99,18 @@ const Card = () => {
 
                 <div>
                     <select
-                        // onChange={e => {
-                        //     setSort(e.target.value)
-                        //     setCurrentPage(1)
-                        // }}
-                        // value={sort}
+                        onChange={e => {
+                            setSorts(e.target.value)
+                            setCurrentPage(1)
+                        }}
+                        value={sorts}
                         name='sort'
                         id='sort'
                         className='border p-4 rounded-md'
                     >
-                        <option value=''>Filter By Price</option>
-                        <option value='dsc'>Descending Order</option>
-                        <option value='asc'>Ascending Order</option>
+                        <option value=''>Sort By Date</option>
+                        <option value='newerList'>Newer list</option>
+                        <option value='olderList'>Older list</option>
                     </select>
                 </div>
                 <form onSubmit={handleSearch}>
@@ -121,12 +138,12 @@ const Card = () => {
                         id='sort'
                         className='border p-4 rounded-md'
                     >
-                        <option value=''>Filter By Price</option>
+                        <option value=''>Sort By Price</option>
                         <option value='dsc'>Descending Order</option>
                         <option value='asc'>Ascending Order</option>
                     </select>
                 </div>
-                <button onClick={handleReset} className='btn'>Reset</button>
+                <button onClick={handleReset} className='px-1 md:px-4 py-3 bg-green-800 rounded-md  text-white font-semibold'>Reset</button>
             </div>
             <div className='flex flex-col md:flex-row justify-center items-center gap-5 flex-wrap mt-5 mb-5'>
                 <div>
@@ -148,14 +165,14 @@ const Card = () => {
                         <option value='Economic History'>Economic History</option>
                     </select>
                 </div>
-
+                
                 <div>
                     <select
                         onChange={e => {
-                            setpubliser(e.target.value)
+                            setFilters(e.target.value)
                             setCurrentPage(1)
                         }}
-                        value={publiser}
+                        value={filters}
                         name='categoryName'
                         id='categoryName'
                         className='border p-4 rounded-lg'
@@ -171,53 +188,59 @@ const Card = () => {
             </div>
             <div className="grid justify-center mb-10 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 ">
                 {
-                    card.map((cardItem, index) => (
-                        <Link
-                            key={index}
-                            className="bg-slate-50 border border-white rounded-lg p-5"
-                        >
-                            <div className="flex flex-col justify-center items-center bg-white py-5 px-5 rounded-lg">
-                                <img
-                                    src={cardItem.image}
-                                    alt={cardItem.title}
-                                    className="w-28 h-40 lg:w-44 lg:h-60"
-                                />
-                            </div>
-                            <div>
-                                <h2 className="mb-1 text-lg lg:text-xl font-semibold">
-                                    {cardItem.title}
-                                </h2>
-                                <p>By: {cardItem.writerName}</p>
-                            </div>
-                            <div className="border-[2px] border-dashed my-5"></div>
-                            <div className="flex justify-between">
-                                Price: {cardItem.priceRange} taka
-                                <div className="flex gap-2 items-center">
-                                    <p>{cardItem.publisher}</p>
-                                </div>
-                            </div>
-                            <div className="flex justify-between">
-                                <div>
-                                    <p>Format:</p>
-                                    <ul>
-                                        {cardItem.format.map((formatItem, formatIndex) => (
-                                            <li key={formatIndex}>{formatItem}</li>
-                                        ))}
-                                    </ul>
+                    card.length === 0 ? (
+                        <LoadingState />
+                    ) : (
+                        card.map((cardItem, index) => (
+                            <div
+                                key={index}
+                                className="bg-slate-50 border border-white rounded-lg p-5"
+                            >
+                                <div className="flex flex-col justify-center items-center bg-white py-5 px-5 rounded-lg">
+                                    <img
+                                        src={cardItem.image}
+                                        alt={cardItem.title}
+                                        className="w-28 h-40 lg:w-44 lg:h-60"
+                                    />
                                 </div>
                                 <div>
-                                    <p>Availability:</p>
-                                    <ul>
-                                        {cardItem.availability.map((availabilityItem, availabilityIndex) => (
-                                            <li key={availabilityIndex}>{availabilityItem}</li>
-                                        ))}
-                                    </ul>
+                                    <h2 className="mb-1 text-lg lg:text-xl font-semibold">
+                                        {cardItem.title}
+                                    </h2>
+                                    <p>By: {cardItem.writerName}</p>
                                 </div>
+                                <div className="border-[2px] border-dashed my-5"></div>
+                                <div className='flex justify-center'><span className='font-bold'>Publishing Brand:</span>{cardItem.publisher}</div>
+                                <div className="flex justify-between">
+                                    <p ><span className='font-bold'>Price:</span>{cardItem.priceRange}taka</p>
+                                    <p><span className='font-bold'>Publish Date:</span>{cardItem.Published_date}</p>
+                                </div>
+                                <div className="">
+                                    <div className='flex justify-start'>
+                                        <p className='mr-5 font-bold'>Format:</p>
+                                        <ul className='flex space-x-5'>
+                                            {cardItem.format.map((formatItem, formatIndex) => (
+                                                <li key={formatIndex}>[{formatItem}]</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className='flex justify-end'>
+                                        <p className='mr-5 font-bold'>Availability:</p>
+                                        <ul className='flex space-x-5'>
+                                            {cardItem.availability.map((availabilityItem, availabilityIndex) => (
+                                                <li key={availabilityIndex}>[{availabilityItem}]</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className='flex justify-center'><span className='font-bold'>Category:</span>{cardItem.categoryName}</div>
                             </div>
-                        </Link>
-                    ))
+                        ))
+                    )
                 }
             </div>
+
 
             {/* Pagination Section */}
             <div className='flex justify-center mt-12'>

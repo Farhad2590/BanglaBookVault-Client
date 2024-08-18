@@ -12,6 +12,7 @@ import {
     updateProfile,
 } from 'firebase/auth'
 import { app } from '../firebase/firebase.configue'
+import toast from 'react-hot-toast'
 // import toast from 'react-hot-toast'
 export const AuthContext = createContext(null)
 const auth = getAuth(app)
@@ -43,7 +44,7 @@ const AuthProvider = ({ children }) => {
 
     const logOut = async () => {
         setLoading(true)
-        // toast.success('Logout successfull')
+        toast.success('Logout successfull')
         return signOut(auth)
     }
 

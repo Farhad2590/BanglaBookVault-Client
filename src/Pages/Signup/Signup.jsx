@@ -13,19 +13,27 @@ const Signup = () => {
     const location = useLocation()
     const from = location?.state || '/'
     // const location = useLocation()
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const {
         createUser,
-        signInWithGoogle
+        signInWithGoogle,
+        updateUserProfile
     } = useAuth()
 
     const onSubmit = (data) => {
-        createUser(data.email, data.password)
-            .then(result => {
-                const loggedUser = result.user;
-                console.log(loggedUser);
-                navigate(from, { replace: true });
-                toast.success('Signup successfull')
+        const { name, email, photoUrl, password } = data;
+        console.log(name, email, photoUrl, password);
+
+        createUser(email, password)
+            .then((result) => {
+                console.log(result.user, "user");
+                updateUserProfile(name, photoUrl)
+                    .then(() => {
+                        toast.success("User registered successfully!");
+                        reset();
+                        navigate("/");
+                    })
+                    .catch((error) => console.log(error));
             })
     };
 
@@ -52,6 +60,17 @@ const Signup = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="mt-2 p-8 space-y-4 w-[50%]">
                     <h1 className="text-3xl text-center font-bold text-green-800">Sign Up</h1>
                     <div className="relative">
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder="Full Name"
+                            className="w-full pl-10 pr-4 py-2 border-b-2 border-gray-300 focus:border-green-800 outline-none"
+                            {...register("name", { required: "Name is required" })}
+                        />
+                        {errors.name && (<span className="text-red-600">Name is required</span>)}
+                    </div>
+                    <div className="relative">
                         <i className="fas fa-envelope absolute left-3 top-3 text-green-800"></i>
                         <input
                             type="text"
@@ -60,6 +79,16 @@ const Signup = () => {
                             className="w-full pl-10 pr-4 py-2 border-b-2 border-gray-300 focus:border-green-800 outline-none"
                         />
                         {errors.email && <span className="text-red-600">Email is required</span>}
+                    </div>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            name="photoUrl"
+                            id="photoUrl"
+                            placeholder="Photo Url"
+                            className="w-full pl-10 pr-4 py-2 border-b-2 border-gray-300 focus:border-green-800 outline-none"
+                            {...register("photoUrl")}
+                        />
                     </div>
                     <div className="relative">
                         <i className="fas fa-lock absolute left-3 top-3 text-green-800"></i>
